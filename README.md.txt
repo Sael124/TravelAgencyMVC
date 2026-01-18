@@ -1,10 +1,10 @@
 # TravelAgencyMVC
 
 ## Student Information
-- Full Name: ______________________
-- Student ID: ______________________
+- Full Name: Sael Tori
+- Student ID: 212753255
 - Course: Communication / Computer Networks
-- Institution: ______________________
+- Institution: Sami Shemaon
 - Academic Year: 2025
 
 ## Project Overview
@@ -31,4 +31,15 @@ The system is implemented using the MVC design pattern:
 - Version Control: Git & GitHub
 
 ## How to Run the Project
-1. Clone the repository:
+1. Clone the repository: https://github.com/Sael124/TravelAgencyMVC.git
+2. Open `TravelAgencyMVC.sln` using Visual Studio
+3. Restore NuGet packages if prompted
+4. Run the project using IIS Express
+
+## GitHub Repository
+https://github.com/Sael124/TravelAgencyMVC.git
+
+## Notes
+This project was created for academic purposes as part of the Communication course.
+
+
