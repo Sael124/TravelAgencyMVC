@@ -1,0 +1,109 @@
+﻿@model List<TravelAgencyMVC.Models.MyTripRowVM>
+
+@{
+    ViewData["Title"] = "My Trips";
+    var now = DateTime.Now.Date;
+}
+
+<h2>My Trips</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have no bookings yet.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Trip</th>
+                <th>Dates</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Time left</th>
+                <th style="width:220px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var x in Model)
+            {
+                var daysLeft = (x.StartDate.Date - now).Days;
+
+                <tr>
+                    <td>
+                        <b>@x.PackageName</b><br />
+                        <small>@x.Destination, @x.Country</small>
+                    </td>
+
+                    <td>
+                        @x.StartDate.ToString("yyyy-MM-dd")
+                        -
+                        @x.EndDate.ToString("yyyy-MM-dd")
+                    </td>
+
+                    <td>@x.Status</td>
+
+                    <td>@x.TotalPrice</td>
+
+                    <td>
+                        @if (daysLeft > 0)
+                        {
+                            <span>@daysLeft days</span>
+                        }
+                        else if (daysLeft == 0)
+                        {
+                            <span class="fw-bold">Today</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Past</span>
+                        }
+                    </td>
+
+                    <td>
+                        @* ✅ Cancel - רק אם Active ויש לפחות 3 ימים *@
+                        @if (x.Status != null && x.Status.Trim() == "Active" && daysLeft >= 3)
+                        {
+                            <form method="post"
+                                  action="/Account/CancelBooking"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('Are you sure you want to cancel this trip?');">
+
+                                <input type="hidden" name="bookingId" value="@x.BookingId" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Cancel
+                                </button>
+                            </form>
+                        }
+                        else if (x.Status != null && x.Status.Trim() == "Active")
+                        {
+                            <span class="text-muted small">Cancellation closed</span>
+                        }
+
+                        @* ✅ Review - רק אם אפשר לדרג (CanReview) ועדיין לא דורג *@
+                        @if (x.CanReview && !x.HasReview)
+                        {
+                            <a class="btn btn-sm btn-outline-primary ms-1"
+                               href="/Reviews/Trip?packageId=@x.PackageId">
+                                Review
+                            </a>
+                        }
+                        else if (x.HasReview)
+                        {
+                            <span class="text-muted small ms-1">Reviewed</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,41 @@
+﻿@model TravelAgencyMVC.Models.TravelPackage
+
+@{
+    ViewData["Title"] = "Pay Now";
+}
+
+<h2>Pay Now</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card p-3 mb-3">
+    <h4>@Model.PackageName</h4>
+    <p>@Model.Destination, @Model.Country</p>
+    <p>Dates: @Model.StartDate.ToString("yyyy-MM-dd") - @Model.EndDate.ToString("yyyy-MM-dd")</p>
+    <p><strong>Price:</strong> @Model.BasePrice</p>
+</div>
+
+<form method="post" action="/Payment/BuyNow">
+    <input type="hidden" name="packageId" value="@Model.PackageId" />
+
+    <div class="mb-3">
+        <label class="form-label">Card Number</label>
+        <input class="form-control" name="cardNumber" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Expiration (MM/YY)</label>
+        <input class="form-control" name="exp" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CVV</label>
+        <input class="form-control" name="cvv" />
+    </div>
+
+    <button class="btn btn-success">Pay</button>
+    <a class="btn btn-secondary" href="/TravelPackages">Cancel</a>
+</form>

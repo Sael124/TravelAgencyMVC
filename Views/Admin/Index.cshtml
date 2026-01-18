@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+<p class="text-muted">Choose what you want to manage</p>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="row g-3 mt-2">
+
+    <div class="col-md-4">
+        <div class="card p-3 h-100">
+            <h5>Service Reviews</h5>
+            <p class="text-muted">Publish / Unpublish user reviews about the service.</p>
+            <a class="btn btn-primary" href="/Admin/ServiceReviews">Open</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 h-100">
+            <h5>Trip Reviews</h5>
+            <p class="text-muted">Manage reviews users wrote about trips.</p>
+            <a class="btn btn-outline-primary" href="/Admin/TripReviews">Open</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 h-100">
+            <h5>Travel Packages</h5>
+            <p class="text-muted">Add / Edit / Hide packages and manage rooms.</p>
+            <a class="btn btn-outline-primary" href="/Admin/Packages">Open</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 h-100">
+            <h5>Discounts</h5>
+            <p class="text-muted">Create time-limited discounts (max 7 days).</p>
+            <a class="btn btn-outline-primary" href="/Admin/Discounts">Open</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3 h-100">
+            <h5>Users</h5>
+            <p class="text-muted">View users, status, and booking history.</p>
+            <a class="btn btn-outline-primary" href="/Admin/Users">Open</a>
+            
+        </div>
+    </div>
+
+</div>

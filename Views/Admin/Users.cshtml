@@ -1,0 +1,85 @@
+﻿@model List<TravelAgencyMVC.Models.AdminUserRowVM>
+
+@{
+    ViewData["Title"] = "Admin - Users";
+}
+
+<h2>Admin - Users</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="mb-3">
+    <a class="btn btn-success" href="/Admin/CreateUser">+ Create User</a>
+</div>
+
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th style="width:320px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            var roleName = (u.RoleId == 1) ? "Admin" : "User";
+            var status = (u.Status ?? "").Trim();
+
+            <tr>
+                <td>@u.UserId</td>
+                <td>@u.FullName</td>
+                <td>@u.Email</td>
+                <td>@roleName</td>
+                <td>
+                    @if (string.Equals(status, "Active", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@status</span>
+                    }
+                </td>
+                <td>@u.CreatedAt.ToString("yyyy-MM-dd")</td>
+
+                <td>
+                    <a class="btn btn-sm btn-outline-primary"
+                       href="/Admin/UserBookings/@u.UserId">
+                        Bookings
+                    </a>
+
+                    <form method="post" action="/Admin/ToggleUserStatus" style="display:inline;"
+                          onsubmit="return confirm('Change status for this user?');">
+                        <input type="hidden" name="id" value="@u.UserId" />
+                        <button class="btn btn-sm btn-warning">
+                            Toggle Status
+                        </button>
+                    </form>
+
+                    <form method="post" action="/Admin/DeleteUser" style="display:inline;"
+                          onsubmit="return confirm('Delete user? (Only if no bookings)');">
+                        <input type="hidden" name="id" value="@u.UserId" />
+                        <button class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" href="/Admin">Back</a>

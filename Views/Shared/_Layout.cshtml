@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Http
+@using TravelAgencyMVC.Models
+@inject TravelAgencyDbContext _db
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TravelAgencyMVC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TravelAgencyMVC.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TravelAgencyMVC</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @{
+                        var uid = Context.Session.GetInt32("UserId");
+                        var rid = Context.Session.GetInt32("RoleId");
+                        var isAdmin = (rid != null && rid.Value == 1);
+
+                        // Unread notifications count (only for logged-in normal users)
+                        int unreadCount = 0;
+                        if (uid != null && !isAdmin)
+                        {
+                            unreadCount = _db.Notifications.Count(n => n.UserId == uid.Value && !n.IsRead);
+                        }
+                    }
+
+                    <!-- Left -->
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+
+                        @if (uid != null)
+                        {
+                            if (isAdmin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/Admin">Admin</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/TravelPackages">Gallery</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/Cart">Cart</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/Account/MyTrips">My Trips</a>
+                                </li>
+
+                                <!-- Notifications -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark position-relative" href="/Notifications">
+                                        Notifications
+                                        @if (unreadCount > 0)
+                                        {
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                @unreadCount
+                                            </span>
+                                        }
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <!-- Right -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="javascript:history.back()">Back</a>
+                        </li>
+
+                        @if (uid == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" href="/Account/Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="/Account/Logout">Logout</a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - TravelAgencyMVC
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

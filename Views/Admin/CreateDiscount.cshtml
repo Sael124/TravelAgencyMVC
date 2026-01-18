@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Create Discount";
+    var packages = ViewBag.Packages as List<TravelAgencyMVC.Models.TravelPackage>;
+}
+
+<h2>Create Discount</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="post" action="/Admin/CreateDiscount">
+    <div class="mb-3">
+        <label class="form-label">Package</label>
+        <select class="form-select" name="packageId" required>
+            <option value="">Select...</option>
+            @foreach (var p in packages)
+            {
+                <option value="@p.PackageId">@p.PackageName (@p.BasePrice)</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">New Price</label>
+        <input class="form-control" type="number" step="0.01" name="newPrice" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Start At</label>
+        <input class="form-control" type="date" name="startAt" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">End At (max 7 days)</label>
+        <input class="form-control" type="date" name="endAt" required />
+    </div>
+
+    <button class="btn btn-success">Create</button>
+    <a class="btn btn-secondary" href="/Admin/Discounts">Back</a>
+</form>

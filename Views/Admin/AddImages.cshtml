@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Add Images";
+    int packageId = (int)ViewBag.PackageId;
+    string packageName = ViewBag.PackageName as string ?? "";
+    var images = ViewBag.Images as List<TravelAgencyMVC.Models.PackageImage>;
+}
+
+<h2>Add Images</h2>
+<p class="text-muted">
+    Package: <b>@packageName</b> (ID: @packageId)
+</p>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="card p-3 mb-4">
+    <h5 class="mb-3">Add new image (URL)</h5>
+
+    <form method="post" action="/Admin/AddImage" class="row g-2">
+        <input type="hidden" name="packageId" value="@packageId" />
+
+        <div class="col-md-8">
+            <input class="form-control" name="imageUrl" placeholder="https://..." />
+        </div>
+
+        <div class="col-md-2 d-flex align-items-center">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="isPrimary" value="true" id="isPrimary">
+                <label class="form-check-label" for="isPrimary">Primary</label>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">Add</button>
+        </div>
+    </form>
+
+    <small class="text-muted d-block mt-2">
+        Tip: If it’s the first image, it becomes Primary automatically.
+    </small>
+</div>
+
+<h5>Current Images</h5>
+
+@if (images == null || !images.Any())
+{
+    <div class="alert alert-info">No images yet.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th style="width:160px;">Preview</th>
+                <th>URL</th>
+                <th style="width:110px;">Primary</th>
+                <th style="width:220px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var img in images)
+            {
+                <tr>
+                    <td>
+                        <img src="@img.ImageUrl"
+                             style="width:150px; height:90px; object-fit:cover; border-radius:8px;"
+                             alt="image" />
+                    </td>
+                    <td style="max-width:520px; word-break:break-all;">
+                        @img.ImageUrl
+                    </td>
+                    <td>
+                        @if (img.IsPrimary)
+                        {
+                            <span class="badge bg-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">No</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!img.IsPrimary)
+                        {
+                            <form method="post" action="/Admin/SetPrimaryImage" style="display:inline;">
+                                <input type="hidden" name="id" value="@img.ImageId" />
+                                <input type="hidden" name="packageId" value="@packageId" />
+                                <button class="btn btn-sm btn-outline-primary">
+                                    Set Primary
+                                </button>
+                            </form>
+                        }
+
+                        <form method="post" action="/Admin/DeleteImage"
+                              style="display:inline;"
+                              onsubmit="return confirm('Delete this image?');">
+                            <input type="hidden" name="id" value="@img.ImageId" />
+                            <input type="hidden" name="packageId" value="@packageId" />
+                            <button class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a class="btn btn-secondary" href="/Admin/Packages">Back to Packages</a>

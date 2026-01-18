@@ -1,0 +1,78 @@
+﻿@model List<TravelAgencyMVC.Models.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<h2>Notifications</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No notifications yet.</div>
+}
+else
+{
+    var unreadCount = Model.Count(x => !x.IsRead);
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <span class="badge bg-secondary">Total: @Model.Count</span>
+            <span class="badge bg-warning text-dark ms-2">Unread: @unreadCount</span>
+        </div>
+
+        <form method="post" action="/Notifications/MarkAllRead">
+            <button class="btn btn-sm btn-outline-success" type="submit"
+                    @(unreadCount == 0 ? "disabled" : "")>
+                Mark all as read
+            </button>
+        </form>
+    </div>
+
+    <div class="list-group">
+        @foreach (var n in Model)
+        {
+            <div class="list-group-item @(n.IsRead ? "" : "border border-warning")">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-dark">@n.Type</span>
+                            <b>@n.Title</b>
+                            @if (!n.IsRead)
+                            {
+                                <span class="badge bg-warning text-dark">NEW</span>
+                            }
+                        </div>
+                        <div class="text-muted small mt-1">
+                            Created: @n.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                            @if (n.SentAt != null)
+                            {
+                                <span class="ms-2">Sent: @n.SentAt.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        @if (!n.IsRead)
+                        {
+                            <form method="post" action="/Notifications/MarkRead" style="display:inline;">
+                                <input type="hidden" name="id" value="@n.NotificationId" />
+                                <button class="btn btn-sm btn-primary" type="submit">Mark as read</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Read</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-2">@n.Message</div>
+            </div>
+        }
+    </div>
+}

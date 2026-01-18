@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Service Review";
+}
+
+<h2>Rate our service</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="post" action="/ServiceReviews/Create">
+    <div class="mb-3">
+        <label class="form-label">Rating (1-5)</label>
+        <select name="rating" class="form-select" required>
+            <option value="">Select...</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Very Good</option>
+            <option value="3">3 - Good</option>
+            <option value="2">2 - Bad</option>
+            <option value="1">1 - Very Bad</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Comment (optional)</label>
+        <textarea name="comment" class="form-control" rows="4" maxlength="1000"></textarea>
+    </div>
+
+    <button class="btn btn-primary">Submit</button>
+    <a class="btn btn-secondary" href="/">Back</a>
+</form>

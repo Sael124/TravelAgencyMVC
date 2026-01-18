@@ -1,0 +1,61 @@
+﻿@model List<TravelAgencyMVC.Models.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<h2>Notifications</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No notifications yet.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th style="width:90px;">Status</th>
+                <th style="width:140px;">Type</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th style="width:160px;">Created</th>
+                <th style="width:140px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var n in Model)
+            {
+                <tr class="@(n.IsRead ? "" : "table-warning")">
+                    <td>
+                        @if (n.IsRead)
+                        {
+                            <span class="badge bg-secondary">Read</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">New</span>
+                        }
+                    </td>
+                    <td>@n.Type</td>
+                    <td><b>@n.Title</b></td>
+                    <td style="max-width:520px;">@n.Message</td>
+                    <td>@n.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @if (!n.IsRead)
+                        {
+                            <form method="post" action="/Account/MarkNotificationRead" style="display:inline;">
+                                <input type="hidden" name="id" value="@n.NotificationId" />
+                                <button class="btn btn-sm btn-primary">Mark as read</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

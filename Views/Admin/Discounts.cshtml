@@ -1,0 +1,79 @@
+﻿@model List<TravelAgencyMVC.Models.Discount>
+
+@{
+    ViewData["Title"] = "Admin - Discounts";
+    var now = (DateTime)ViewBag.Now;
+}
+
+<h2>Admin - Discounts</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/Admin/CreateDiscount">Create Discount</a>
+    <a class="btn btn-secondary" href="/Admin">Back</a>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>PackageId</th>
+            <th>Old</th>
+            <th>New</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Active</th>
+            <th>Status</th>
+            <th style="width:260px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model)
+        {
+            bool inTime = d.StartAt <= now && now <= d.EndAt;
+            <tr>
+                <td>@d.DiscountId</td>
+                <td>@d.PackageId</td>
+                <td>@d.OldPrice</td>
+                <td><b>@d.NewPrice</b></td>
+                <td>@d.StartAt.ToString("yyyy-MM-dd")</td>
+                <td>@d.EndAt.ToString("yyyy-MM-dd")</td>
+                <td>@(d.IsActive ? "Yes" : "No")</td>
+                <td>
+                    @if (d.IsActive && inTime)
+                    {
+                        <span class="badge bg-success">LIVE</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Not live</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="/Admin/EditDiscount/@d.DiscountId">Edit</a>
+
+                    <form method="post" action="/Admin/ToggleDiscount" style="display:inline;">
+                        <input type="hidden" name="id" value="@d.DiscountId" />
+                        <button class="btn btn-sm btn-warning">
+                            @(d.IsActive ? "Disable" : "Enable")
+                        </button>
+                    </form>
+
+                    <form method="post" action="/Admin/DeleteDiscount" style="display:inline;"
+                          onsubmit="return confirm('Delete this discount?');">
+                        <input type="hidden" name="id" value="@d.DiscountId" />
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

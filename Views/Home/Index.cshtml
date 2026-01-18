@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var serviceReviews = ViewBag.ServiceReviews as List<TravelAgencyMVC.Models.ServiceReviewVM>;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <h3>Total trips in database: @ViewBag.PackagesCount</h3>
+    <p>Learn about ...</p>
+
+    <div class="mt-4">
+        <a class="btn btn-outline-primary" href="/ServiceReviews/Create">
+            Rate our service
+        </a>
+    </div>
+
+    <hr class="my-4" />
+
+    <h3>What users think about our service</h3>
+
+    @if (serviceReviews == null || !serviceReviews.Any())
+    {
+        <div class="text-muted">No published reviews yet.</div>
+    }
+    else
+    {
+        <div class="list-group text-start">
+            @foreach (var r in serviceReviews)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <b>@r.UserFullName</b>
+                            <span class="ms-2 text-muted">Rating: @r.Rating / 5</span>
+                        </div>
+                        <small class="text-muted">@r.CreatedAt.ToString("yyyy-MM-dd")</small>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(r.Comment))
+                    {
+                        <div class="mt-2">@r.Comment</div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

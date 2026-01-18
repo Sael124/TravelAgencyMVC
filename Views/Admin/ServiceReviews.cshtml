@@ -1,0 +1,75 @@
+﻿@model List<TravelAgencyMVC.Models.ServiceReview>
+
+@{
+    ViewData["Title"] = "Admin - Service Reviews";
+}
+
+<h2>Admin - Service Reviews</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>UserId</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Created</th>
+            <th>Published</th>
+            <th style="width:180px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.ServiceReviewId</td>
+                <td>@r.UserId</td>
+                <td>@r.Rating</td>
+                <td style="max-width:450px;">
+                    @if (!string.IsNullOrWhiteSpace(r.Comment))
+                    {
+                        @r.Comment
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+                <td>@r.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    @if (r.IsPublished)
+                    {
+                        <span class="badge bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No</span>
+                    }
+                </td>
+                <td>
+                    @if (!r.IsPublished)
+                    {
+                        <form method="post" action="/Admin/PublishServiceReview" style="display:inline;">
+                            <input type="hidden" name="id" value="@r.ServiceReviewId" />
+                            <button class="btn btn-sm btn-success">Publish</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" action="/Admin/UnpublishServiceReview" style="display:inline;">
+                            <input type="hidden" name="id" value="@r.ServiceReviewId" />
+                            <button class="btn btn-sm btn-warning">Unpublish</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" href="/">Back</a>

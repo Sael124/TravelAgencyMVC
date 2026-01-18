@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Checkout";
+}
+
+<h2>Checkout</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="post" action="/Cart/Checkout">
+    <div class="mb-3">
+        <label class="form-label">Card Number</label>
+        <input class="form-control" name="cardNumber" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Expiration (MM/YY)</label>
+        <input class="form-control" name="exp" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CVV</label>
+        <input class="form-control" name="cvv" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Pay</button>
+    <a class="btn btn-secondary" href="/Cart">Back</a>
+</form>

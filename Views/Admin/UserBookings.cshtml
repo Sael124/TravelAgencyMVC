@@ -1,0 +1,50 @@
+﻿@model List<TravelAgencyMVC.Models.AdminUserBookingRowVM>
+
+@{
+    ViewData["Title"] = "User Bookings";
+    var title = ViewBag.UserTitle as string;
+}
+
+<h2>User Bookings</h2>
+@if (!string.IsNullOrWhiteSpace(title))
+{
+    <div class="text-muted mb-3">@title</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No bookings for this user.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>BookingId</th>
+                <th>Trip</th>
+                <th>Dates</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>BookedAt</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.BookingId</td>
+                    <td>
+                        <b>@x.PackageName</b><br />
+                        <small>@x.Destination, @x.Country</small>
+                    </td>
+                    <td>@x.StartDate.ToString("yyyy-MM-dd") - @x.EndDate.ToString("yyyy-MM-dd")</td>
+                    <td>@x.Status</td>
+                    <td>@x.TotalPrice</td>
+                    <td>@x.BookedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a class="btn btn-secondary" href="/Admin/Users">Back to Users</a>

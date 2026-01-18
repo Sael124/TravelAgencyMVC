@@ -1,0 +1,58 @@
+﻿@model List<TravelAgencyMVC.Models.AdminTripReviewRowVM>
+
+@{
+    ViewData["Title"] = "Admin - Trip Reviews";
+}
+
+<h2>Admin - Trip Reviews</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Trip</th>
+            <th>User</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th style="width:140px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>
+                    <b>@r.PackageName</b><br />
+                    <small>@r.Destination, @r.Country</small>
+                </td>
+                <td>@r.UserFullName</td>
+                <td>@r.Rating / 5</td>
+                <td style="max-width:450px;">
+                    @if (!string.IsNullOrWhiteSpace(r.Comment))
+                    {
+                        @r.Comment
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+                <td>@r.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <form method="post" action="/Admin/DeleteTripReview"
+                          onsubmit="return confirm('Delete this review?');">
+                        <input type="hidden" name="id" value="@r.ReviewId" />
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" href="/Admin">Back</a>

@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Create Package";
+    var cats = ViewBag.Categories as List<TravelAgencyMVC.Models.Category>;
+}
+
+<h2>Create Package</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="post" action="/Admin/CreatePackage">
+
+    <div class="mb-3">
+        <label class="form-label">Package Name</label>
+        <input class="form-control" name="PackageName" required />
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Destination</label>
+            <input class="form-control" name="Destination" required />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Country</label>
+            <input class="form-control" name="Country" required />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Start Date</label>
+            <input class="form-control" type="date" name="StartDate" required />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">End Date</label>
+            <input class="form-control" type="date" name="EndDate" required />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Price</label>
+            <input class="form-control" type="number" step="0.01" name="BasePrice" required />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Available Rooms</label>
+            <input class="form-control" type="number" name="AvailableRooms" required />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Age Limit</label>
+            <input class="form-control" type="number" name="AgeLimit" required />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="Description" rows="4"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select class="form-select" name="CategoryId" required>
+            @if (cats != null)
+            {
+                @foreach (var c in cats)
+                {
+                    <option value="@c.CategoryId">@c.CategoryName</option>
+                }
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-success">Create</button>
+    <a class="btn btn-secondary" href="/Admin/Packages">Back</a>
+</form>

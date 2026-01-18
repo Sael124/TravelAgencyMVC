@@ -1,0 +1,105 @@
+﻿@model List<TravelAgencyMVC.Models.TripCardVM>
+
+@{
+    ViewData["Title"] = "Trip Gallery";
+}
+
+<h2>Trip Gallery</h2>
+<p>Total trips: @Model.Count</p>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th style="width:140px;">Image</th>
+            <th>Package</th>
+            <th>Destination</th>
+            <th>Dates</th>
+            <th>Price</th>
+            <th>Rooms</th>
+            <th>Age</th>
+            <th style="width:220px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var p = item.Package;
+
+            <tr>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(item.PrimaryImageUrl))
+                    {
+                        <img src="@item.PrimaryImageUrl"
+                             alt="Trip image"
+                             style="width:120px; height:80px; object-fit:cover; border-radius:8px;" />
+                    }
+                    else
+                    {
+                        <span>No image</span>
+                    }
+                </td>
+
+                <td>
+                    <strong>@p.PackageName</strong><br />
+                    <small>@p.Country</small>
+                </td>
+
+                <td>@p.Destination</td>
+
+                <td>
+                    @p.StartDate.ToString("yyyy-MM-dd")
+                    -
+                    @p.EndDate.ToString("yyyy-MM-dd")
+                </td>
+
+                <td>
+                    @if (item.HasActiveDiscount && item.OldPrice.HasValue && item.NewPrice.HasValue)
+                    {
+                        <div>
+                            <span style="text-decoration: line-through;">@item.OldPrice.Value</span>
+                            <span class="ms-2 fw-bold">@item.NewPrice.Value</span>
+                            <span class="badge bg-success ms-2">On sale</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span>@p.BasePrice</span>
+                    }
+                </td>
+
+                <td>@p.AvailableRooms</td>
+                <td>@p.AgeLimit+</td>
+
+                <td>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a class="btn btn-primary btn-sm"
+                           href="/TravelPackages/Book/@p.PackageId">
+                            Book
+                        </a>
+
+                        <a class="btn btn-success btn-sm"
+                           href="/Payment/BuyNow/@p.PackageId">
+                            Buy Now
+                        </a>
+
+                        <form method="post" action="/Cart/Add" style="display:inline;">
+                            <input type="hidden" name="packageId" value="@p.PackageId" />
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

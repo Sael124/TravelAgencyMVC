@@ -1,0 +1,71 @@
+﻿@model List<TravelAgencyMVC.Models.AdminPackageRowVM>
+
+@{
+    ViewData["Title"] = "Admin - Packages";
+}
+
+<h2>Admin - Packages</h2>
+
+<a class="btn btn-success mb-3" href="/Admin/CreatePackage">
+    + Create New Package
+</a>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Package</th>
+            <th>Destination</th>
+            <th>Dates</th>
+            <th>Price</th>
+            <th>Rooms</th>
+            <th>Visible</th>
+            <th style="width:260px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.PackageId</td>
+                <td><b>@p.PackageName</b><br /><small>CategoryId: @p.CategoryId</small></td>
+                <td>@p.Destination, @p.Country</td>
+                <td>@p.StartDate.ToString("yyyy-MM-dd") - @p.EndDate.ToString("yyyy-MM-dd")</td>
+                <td>@p.BasePrice</td>
+                <td>@p.AvailableRooms</td>
+                <td>
+                    @if (p.IsVisible)
+                    {
+                        <span class="badge bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="/Admin/EditPackage/@p.PackageId">Edit</a>
+
+                    <form method="post" action="/Admin/TogglePackageVisibility" style="display:inline;"
+                          onsubmit="return confirm('Change visibility for this package?');">
+                        <input type="hidden" name="id" value="@p.PackageId" />
+                        <button class="btn btn-sm btn-warning">
+                            @(p.IsVisible ? "Hide" : "Show")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary" href="/Admin">Back</a>
